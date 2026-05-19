@@ -591,7 +591,7 @@
 
             <div class="lv-card-fields">
 
-              <div class="lv-cuotas-pill">12 cuotas</div>
+              <div class="lv-cuotas-pill">18 cuotas</div>
 
               <div class="lv-fields-2col">
                 <div>
@@ -642,7 +642,7 @@
 
             <div class="lv-card-fields">
 
-              <div class="lv-cuotas-pill">18 cuotas</div>
+              <div class="lv-cuotas-pill">12 cuotas</div>
 
               <div class="lv-fields-2col">
                 <div>
@@ -802,27 +802,27 @@
   }
 
   function renderOffers() {
-    /* Oferta A: monto máximo, 13% comisión, 0.8% fee, 12 cuotas */
-    const capitalA = selectedMax;
-    const montoA   = capitalA * (1 - 0.13);
-    const feeA     = montoA * 0.008;
-    const cuotaA   = montoA / 12;
+    /* Oferta A: monto máximo (sin descuento), 13% comisión, 0.8% fee, 18 cuotas */
+    const montoA  = selectedMax;
+    const feeA    = montoA * 0.008;
+    const totalA  = montoA + montoA * 0.13 + feeA;
+    const cuotaA  = totalA / 18;
 
     document.getElementById('ofertaA-monto').textContent = fmtCLP(montoA);
     document.getElementById('ofertaA-fee').textContent   = fmtCLP(feeA);
     document.getElementById('ofertaA-cuota').textContent = fmtCLP(cuotaA);
-    document.getElementById('ofertaA-total').textContent = fmtCLP(montoA);
+    document.getElementById('ofertaA-total').textContent = fmtCLP(totalA);
 
-    /* Oferta B: 80% del máximo, 10% comisión, 0.8% fee, 18 cuotas */
-    const capitalB = selectedMax * 0.80;
-    const montoB   = capitalB * (1 - 0.10);
-    const feeB     = montoB * 0.008;
-    const cuotaB   = montoB / 18;
+    /* Oferta B: 80% del máximo, 10% comisión, 0.8% fee, 12 cuotas */
+    const montoB  = selectedMax * 0.80;
+    const feeB    = montoB * 0.008;
+    const totalB  = montoB + montoB * 0.10 + feeB;
+    const cuotaB  = totalB / 12;
 
     document.getElementById('ofertaB-monto').textContent = fmtCLP(montoB);
     document.getElementById('ofertaB-fee').textContent   = fmtCLP(feeB);
     document.getElementById('ofertaB-cuota').textContent = fmtCLP(cuotaB);
-    document.getElementById('ofertaB-total').textContent = fmtCLP(montoB);
+    document.getElementById('ofertaB-total').textContent = fmtCLP(totalB);
   }
 
   function goToOffers() {
@@ -843,20 +843,20 @@
   function showDetail(oferta) {
     const isA = oferta === 'A';
 
-    const capital   = isA ? selectedMax : selectedMax * 0.80;
     const comision  = isA ? 0.13 : 0.10;
-    const cuotas    = isA ? 12 : 18;
+    const cuotas    = isA ? 18 : 12;
     const retencion = isA ? '5,00%' : '10,00%';
-    const monto     = capital * (1 - comision);
+    const monto     = isA ? selectedMax : selectedMax * 0.80;
     const fee       = monto * 0.008;
-    const cuota     = monto / cuotas;
+    const total     = monto + monto * comision + fee;
+    const cuota     = total / cuotas;
 
-    document.getElementById('m-plazo').textContent      = cuotas + ' cuotas';
-    document.getElementById('m-comision').textContent   = (comision * 100).toFixed(2).replace('.', ',') + '%';
-    document.getElementById('m-solicitado').textContent = fmtCLP(capital);
-    document.getElementById('m-fee').textContent        = fmtCLP(fee);
+    document.getElementById('m-plazo').textContent       = cuotas + ' cuotas';
+    document.getElementById('m-comision').textContent    = (comision * 100).toFixed(2).replace('.', ',') + '%';
+    document.getElementById('m-solicitado').textContent  = fmtCLP(monto);
+    document.getElementById('m-fee').textContent         = fmtCLP(fee);
     document.getElementById('m-desembolsar').textContent = fmtCLP(monto);
-    document.getElementById('m-total').textContent      = fmtCLP(monto);
+    document.getElementById('m-total').textContent       = fmtCLP(total);
     document.getElementById('m-retencion').textContent  = retencion;
     document.getElementById('m-cuota').textContent      = fmtCLP(cuota);
     document.getElementById('m-cta').href = 'https://levannta.com/?utm_source=simuladorcomercio';
