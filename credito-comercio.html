@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crédito Comercio – Levannta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ──────────────────────────────────────── */
+    :root {
+      --color-brand:        #0A2463;
+      --color-brand-mid:    #1A3C8F;
+      --color-accent:       #3D9BE9;
+      --color-accent-light: #E8F3FD;
+      --color-teal:         #0EA5E9;
+      --color-teal-light:   #E0F2FE;
+      --color-success:      #15803D;
+      --color-success-bg:   #DCFCE7;
+      --color-warning:      #B45309;
+      --color-neutral-50:   #F8FAFC;
+      --color-neutral-100:  #F1F5F9;
+      --color-neutral-200:  #E2E8F0;
+      --color-neutral-300:  #CBD5E1;
+      --color-neutral-400:  #94A3B8;
+      --color-neutral-500:  #64748B;
+      --color-neutral-600:  #475569;
+      --color-neutral-700:  #334155;
+      --color-neutral-800:  #1E293B;
+      --color-white:        #FFFFFF;
+
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   16px;
+      --radius-xl:   24px;
+      --radius-full: 9999px;
+
+      --shadow-card:  0 2px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.05);
+      --shadow-lg:    0 8px 32px rgba(0,0,0,.12);
+      --shadow-focus: 0 0 0 3px rgba(61,155,233,.25);
+
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-xs:   12px;
+      --font-sm:   13px;
+      --font-base: 14px;
+      --font-md:   16px;
+      --font-lg:   18px;
+      --font-xl:   22px;
+
+      --transition: 160ms ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--color-neutral-50);
+      color: var(--color-neutral-800);
+      font-size: var(--font-base);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Wrapper ────────────────────────────────────────────── */
+    .lv-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 60px;
+    }
+
+    .lv-panel {
+      width: 100%;
+      max-width: 880px;
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    /* ─── Header ────────────────────────────────────────────── */
+    .lv-header {
+      background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-mid) 100%);
+      padding: 28px 36px 24px;
+      color: var(--color-white);
+      position: relative;
+      overflow: hidden;
+    }
+    .lv-header::after {
+      content: '';
+      position: absolute;
+      right: -40px; top: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+    }
+    .lv-header-label { font-size: var(--font-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .65; margin-bottom: 6px; }
+    .lv-header-title  { font-size: var(--font-xl); font-weight: 700; line-height: 1.2; }
+    .lv-header-sub    { margin-top: 6px; font-size: var(--font-sm); opacity: .7; }
+
+    /* ══════════════════════════════════════════════════════════
+       PRE-SCREEN
+    ══════════════════════════════════════════════════════════ */
+    #screen-pre    { display: block; }
+    #screen-offers { display: none; }
+
+    .lv-pre-body {
+      padding: 40px 36px 36px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .lv-pre-question {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--color-brand);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .lv-pre-sub {
+      font-size: var(--font-sm);
+      color: var(--color-neutral-500);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .lv-options { display: flex; flex-direction: column; gap: 10px; }
+
+    .lv-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 2px solid var(--color-neutral-200);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      user-select: none;
+    }
+    .lv-option:hover { border-color: var(--color-accent); background: var(--color-accent-light); }
+    .lv-option.selected { border-color: var(--color-accent); background: var(--color-accent-light); box-shadow: var(--shadow-focus); }
+
+    .lv-radio {
+      width: 22px; height: 22px;
+      border: 2px solid var(--color-neutral-300);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: var(--color-white);
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .lv-option.selected .lv-radio { border-color: var(--color-accent); background: var(--color-accent); }
+    .lv-radio-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-white);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .lv-option.selected .lv-radio-dot { opacity: 1; }
+
+    .lv-option-text { flex: 1; }
+    .lv-option-label { font-size: var(--font-md); font-weight: 600; color: var(--color-neutral-800); }
+    .lv-option.selected .lv-option-label { color: var(--color-brand); }
+
+    .lv-pre-cta { margin-top: 28px; display: flex; justify-content: center; }
+    .lv-btn-continuar {
+      font-family: var(--font-family);
+      font-size: var(--font-md);
+      font-weight: 600;
+      padding: 14px 48px;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--color-accent) 0%, #1A77D4 100%);
+      color: var(--color-white);
+      box-shadow: 0 4px 16px rgba(61,155,233,.35);
+      transition: all var(--transition);
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .lv-btn-continuar.visible { display: inline-flex; }
+    .lv-btn-continuar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(61,155,233,.45); }
+
+    /* ══════════════════════════════════════════════════════════
+       OFFERS SCREEN
+    ══════════════════════════════════════════════════════════ */
+    .lv-back-bar { padding: 20px 28px 0; }
+    .lv-back-btn {
+      font-family: var(--font-family);
+      font-size: var(--font-sm);
+      font-weight: 600;
+      color: #B45309;
+      background: #FFF7ED;
+      border: 1.5px solid #FED7AA;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px 7px 12px;
+      border-radius: var(--radius-full);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    .lv-back-btn:hover { background: #FEF3C7; box-shadow: 0 2px 8px rgba(180,83,9,.15); }
+    .lv-back-btn svg { flex-shrink: 0; }
+
+    .lv-offers-body { padding: 20px 28px 32px; }
+
+    .lv-offers-intro { text-align: center; margin-bottom: 24px; }
+    .lv-offers-intro-title { font-size: var(--font-lg); font-weight: 700; color: var(--color-brand); margin-bottom: 4px; }
+    .lv-offers-intro-sub { font-size: var(--font-sm); color: var(--color-neutral-500); }
+
+    .lv-offers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ─── Offer Card ─────────────────────────────────────────── */
+    .lv-offer-card {
+      background: var(--color-white);
+      border: 1.5px solid var(--color-neutral-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .lv-offer-card:hover { border-color: var(--color-accent); box-shadow: 0 4px 20px rgba(61,155,233,.15); }
+
+    /* Card top: title + monto */
+    .lv-card-top {
+      padding: 20px 20px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
+    .lv-card-title {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--color-brand);
+      letter-spacing: -.01em;
+    }
+    .lv-card-monto-wrap { text-align: right; }
+    .lv-card-monto-label {
+      font-size: var(--font-xs);
+      color: var(--color-neutral-400);
+      margin-bottom: 4px;
+    }
+    .lv-card-monto {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-brand);
+      line-height: 1;
+    }
+
+    /* Cuotas pill */
+    .lv-card-fields { padding: 18px 20px 0; }
+
+    .lv-cuotas-pill {
+      display: inline-flex;
+      align-items: center;
+      background: var(--color-teal-light);
+      color: var(--color-teal);
+      font-size: var(--font-md);
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+
+    /* 2-column field grid */
+    .lv-fields-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 12px;
+      margin-bottom: 16px;
+    }
+    .lv-field-full { margin-bottom: 16px; }
+
+    .lv-field-label {
+      font-size: var(--font-sm);
+      color: var(--color-neutral-500);
+      margin-bottom: 3px;
+    }
+    .lv-field-value {
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--color-neutral-800);
+    }
+
+    /* Divider */
+    .lv-divider {
+      height: 1px;
+      background: var(--color-neutral-200);
+      margin: 4px 0 16px;
+    }
+
+    /* Pago mínimo row */
+    .lv-field-pago { margin-bottom: 16px; }
+
+    /* Total box */
+    .lv-total-box {
+      background: var(--color-teal-light);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin: 0 0 20px;
+    }
+    .lv-total-label {
+      font-size: var(--font-sm);
+      color: var(--color-neutral-500);
+      margin-bottom: 4px;
+    }
+    .lv-total-amount {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-teal);
+    }
+
+    /* Seleccionar button */
+    .lv-btn-seleccionar {
+      font-family: var(--font-family);
+      font-size: var(--font-md);
+      font-weight: 700;
+      width: 100%;
+      padding: 15px;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      background: #00D084;
+      color: var(--color-white);
+      transition: all var(--transition);
+      letter-spacing: .01em;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      margin: 0 20px 20px;
+      width: calc(100% - 40px);
+      box-shadow: 0 4px 14px rgba(0,208,132,.3);
+    }
+    .lv-btn-seleccionar:hover { background: #00BA77; box-shadow: 0 6px 20px rgba(0,208,132,.45); transform: translateY(-1px); }
+
+    /* Footer */
+    .lv-footer {
+      border-top: 1px solid var(--color-neutral-200);
+      padding: 16px 28px;
+      text-align: center;
+    }
+    .lv-footer-note { font-size: var(--font-xs); color: var(--color-neutral-400); line-height: 1.6; }
+    .lv-footer-note strong { color: var(--color-neutral-600); }
+
+    /* ══════════════════════════════════════════════════════════
+       MODAL
+    ══════════════════════════════════════════════════════════ */
+    .lv-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lv-overlay.open { display: flex; }
+
+    .lv-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 60px rgba(0,0,0,.22);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .lv-modal-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--color-neutral-200);
+      flex-shrink: 0;
+    }
+    .lv-modal-title {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--color-neutral-800);
+    }
+
+    .lv-modal-body {
+      overflow-y: auto;
+      flex: 1;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Info callout */
+    .lv-modal-callout {
+      border: 1.5px solid var(--color-teal);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: var(--font-sm);
+      color: var(--color-neutral-700);
+    }
+    .lv-modal-callout svg { flex-shrink: 0; color: var(--color-teal); }
+
+    /* Sections */
+    .lv-modal-section {
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-neutral-200);
+      padding: 16px 18px;
+    }
+    .lv-modal-section-title {
+      font-size: var(--font-base);
+      font-weight: 700;
+      color: var(--color-neutral-800);
+      margin-bottom: 14px;
+    }
+    .lv-modal-divider {
+      height: 1px;
+      background: var(--color-neutral-200);
+      margin: 12px 0;
+    }
+
+    /* Field grid inside modal */
+    .lv-modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 16px;
+    }
+    .lv-modal-field-label {
+      font-size: var(--font-sm);
+      color: var(--color-neutral-500);
+      margin-bottom: 2px;
+    }
+    .lv-modal-field-value {
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--color-neutral-800);
+    }
+    .lv-modal-field-value.cyan { color: var(--color-teal); }
+
+    /* Footer */
+    .lv-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-neutral-200);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+    .lv-btn-cancelar {
+      font-family: var(--font-family);
+      font-size: var(--font-base);
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      background: var(--color-teal);
+      color: var(--color-white);
+      transition: all var(--transition);
+    }
+    .lv-btn-cancelar:hover { background: #0284C7; }
+    .lv-btn-confirmar {
+      font-family: var(--font-family);
+      font-size: var(--font-base);
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: var(--radius-full);
+      border: none;
+      cursor: pointer;
+      background: #00D084;
+      color: var(--color-white);
+      transition: all var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .lv-btn-confirmar:hover { background: #00BA77; transform: translateY(-1px); }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 620px) {
+      .lv-offers-grid { grid-template-columns: 1fr; }
+      .lv-header, .lv-pre-body, .lv-offers-body { padding: 20px; }
+      .lv-back-bar { padding: 12px 20px 0; }
+      .lv-modal-grid { grid-template-columns: 1fr; }
+      .lv-modal-footer { flex-direction: column-reverse; }
+      .lv-btn-cancelar, .lv-btn-confirmar { text-align: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="lv-wrapper">
+  <div class="lv-panel">
+
+    <!-- Shared header -->
+    <div class="lv-header">
+      <div class="lv-header-label">Financiamiento &nbsp;/&nbsp; Capital de trabajo</div>
+      <div class="lv-header-title">Crédito Comercio</div>
+      <div class="lv-header-sub">Obtén capital para tu negocio con condiciones flexibles adaptadas a tu facturación</div>
+    </div>
+
+    <!-- ══ PRE-SCREEN ══════════════════════════════════════════ -->
+    <div id="screen-pre">
+      <div class="lv-pre-body">
+        <div class="lv-pre-question">¿Cuánto vende tu empresa mensualmente?</div>
+        <div class="lv-pre-sub">Selecciona el rango que mejor representa tu facturación</div>
+
+        <div class="lv-options">
+
+          <div class="lv-option" data-max="5000000" onclick="selectRange(this)">
+            <div class="lv-radio"><div class="lv-radio-dot"></div></div>
+            <div class="lv-option-text">
+              <div class="lv-option-label">0 a 5 Millones CLP</div>
+            </div>
+          </div>
+
+          <div class="lv-option" data-max="30000000" onclick="selectRange(this)">
+            <div class="lv-radio"><div class="lv-radio-dot"></div></div>
+            <div class="lv-option-text">
+              <div class="lv-option-label">5 a 30 Millones CLP</div>
+            </div>
+          </div>
+
+          <div class="lv-option" data-max="100000000" onclick="selectRange(this)">
+            <div class="lv-radio"><div class="lv-radio-dot"></div></div>
+            <div class="lv-option-text">
+              <div class="lv-option-label">30 a 100 Millones CLP</div>
+            </div>
+          </div>
+
+          <div class="lv-option" data-max="300000000" onclick="selectRange(this)">
+            <div class="lv-radio"><div class="lv-radio-dot"></div></div>
+            <div class="lv-option-text">
+              <div class="lv-option-label">Sobre 100 Millones CLP</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="lv-pre-cta">
+          <button id="btnContinuar" class="lv-btn-continuar" onclick="goToOffers()">
+            Continuar &nbsp;→
+          </button>
+        </div>
+      </div>
+    </div><!-- /screen-pre -->
+
+    <!-- ══ OFFERS SCREEN ══════════════════════════════════════ -->
+    <div id="screen-offers">
+
+      <div class="lv-back-bar">
+        <button class="lv-back-btn" onclick="goBack()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Modificar rango de facturación
+        </button>
+      </div>
+
+      <div class="lv-offers-body">
+
+        <div class="lv-offers-intro">
+          <div class="lv-offers-intro-title">Tus ofertas personalizadas</div>
+          <div class="lv-offers-intro-sub">Basadas en tu rango de facturación. Elige la que mejor se adapte a tu negocio.</div>
+        </div>
+
+        <div class="lv-offers-grid">
+
+          <!-- OFERTA A -->
+          <div class="lv-offer-card">
+
+            <div class="lv-card-top">
+              <div class="lv-card-title">OFERTA A</div>
+              <div class="lv-card-monto-wrap">
+                <div class="lv-card-monto-label">Monto a recibir:</div>
+                <div class="lv-card-monto" id="ofertaA-monto">—</div>
+              </div>
+            </div>
+
+            <div class="lv-card-fields">
+
+              <div class="lv-cuotas-pill">12 cuotas</div>
+
+              <div class="lv-fields-2col">
+                <div>
+                  <div class="lv-field-label">Comisión</div>
+                  <div class="lv-field-value">13,00%</div>
+                </div>
+                <div>
+                  <div class="lv-field-label">Fee por Servicios</div>
+                  <div class="lv-field-value" id="ofertaA-fee">—</div>
+                </div>
+              </div>
+
+              <div class="lv-field-full">
+                <div class="lv-field-label">Modalidad de pago</div>
+                <div class="lv-field-value">5,00% retención</div>
+              </div>
+
+              <div class="lv-divider"></div>
+
+              <div class="lv-field-pago">
+                <div class="lv-field-label">Pago mínimo mensual</div>
+                <div class="lv-field-value" id="ofertaA-cuota">—</div>
+              </div>
+
+              <div class="lv-total-box">
+                <div class="lv-total-label">Monto total a pagar</div>
+                <div class="lv-total-amount" id="ofertaA-total">—</div>
+              </div>
+
+            </div>
+
+            <button class="lv-btn-seleccionar" onclick="showDetail('A')">
+              Seleccionar
+            </button>
+
+          </div><!-- /OFERTA A -->
+
+          <!-- OFERTA B -->
+          <div class="lv-offer-card">
+
+            <div class="lv-card-top">
+              <div class="lv-card-title">OFERTA B</div>
+              <div class="lv-card-monto-wrap">
+                <div class="lv-card-monto-label">Monto a recibir:</div>
+                <div class="lv-card-monto" id="ofertaB-monto">—</div>
+              </div>
+            </div>
+
+            <div class="lv-card-fields">
+
+              <div class="lv-cuotas-pill">18 cuotas</div>
+
+              <div class="lv-fields-2col">
+                <div>
+                  <div class="lv-field-label">Comisión</div>
+                  <div class="lv-field-value">10,00%</div>
+                </div>
+                <div>
+                  <div class="lv-field-label">Fee por Servicios</div>
+                  <div class="lv-field-value" id="ofertaB-fee">—</div>
+                </div>
+              </div>
+
+              <div class="lv-field-full">
+                <div class="lv-field-label">Modalidad de pago</div>
+                <div class="lv-field-value">10,00% retención</div>
+              </div>
+
+              <div class="lv-divider"></div>
+
+              <div class="lv-field-pago">
+                <div class="lv-field-label">Pago mínimo mensual</div>
+                <div class="lv-field-value" id="ofertaB-cuota">—</div>
+              </div>
+
+              <div class="lv-total-box">
+                <div class="lv-total-label">Monto total a pagar</div>
+                <div class="lv-total-amount" id="ofertaB-total">—</div>
+              </div>
+
+            </div>
+
+            <button class="lv-btn-seleccionar" onclick="showDetail('B')">
+              Seleccionar
+            </button>
+
+          </div><!-- /OFERTA B -->
+
+        </div><!-- /lv-offers-grid -->
+      </div><!-- /lv-offers-body -->
+
+      <div class="lv-footer">
+        <div class="lv-footer-note">
+          Al continuar aceptas los <strong>Términos y Condiciones</strong> de Levannta.
+          Operación sujeta a aprobación crediticia. Valores referenciales.
+        </div>
+      </div>
+
+    </div><!-- /screen-offers -->
+
+  </div><!-- /lv-panel -->
+</div><!-- /lv-wrapper -->
+
+<!-- ══ MODAL ══════════════════════════════════════════════════ -->
+<div class="lv-overlay" id="modalOverlay" onclick="closeDetailOnBackdrop(event)">
+  <div class="lv-modal">
+
+    <div class="lv-modal-header">
+      <div class="lv-modal-title">Confirmar solicitud de crédito</div>
+    </div>
+
+    <div class="lv-modal-body">
+
+      <div class="lv-modal-callout">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9 8v5M9 6h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Revisa los detalles de tu solicitud antes de confirmar
+      </div>
+
+      <!-- Resumen -->
+      <div class="lv-modal-section">
+        <div class="lv-modal-section-title">Resumen de la operación</div>
+        <div class="lv-modal-grid">
+          <div>
+            <div class="lv-modal-field-label">Producto:</div>
+            <div class="lv-modal-field-value">Crédito Comercio</div>
+          </div>
+          <div>
+            <div class="lv-modal-field-label">Plazo:</div>
+            <div class="lv-modal-field-value" id="m-plazo">—</div>
+          </div>
+        </div>
+        <div class="lv-modal-divider"></div>
+        <div>
+          <div class="lv-modal-field-label">Comisión:</div>
+          <div class="lv-modal-field-value" id="m-comision">—</div>
+        </div>
+      </div>
+
+      <!-- Montos -->
+      <div class="lv-modal-section">
+        <div class="lv-modal-section-title">Montos</div>
+        <div class="lv-modal-grid">
+          <div>
+            <div class="lv-modal-field-label">Monto solicitado:</div>
+            <div class="lv-modal-field-value" id="m-solicitado">—</div>
+          </div>
+          <div>
+            <div class="lv-modal-field-label">Fee por servicio:</div>
+            <div class="lv-modal-field-value" id="m-fee">—</div>
+          </div>
+          <div>
+            <div class="lv-modal-field-label">Monto a desembolsar:</div>
+            <div class="lv-modal-field-value cyan" id="m-desembolsar">—</div>
+          </div>
+          <div>
+            <div class="lv-modal-field-label">Monto total a pagar:</div>
+            <div class="lv-modal-field-value" id="m-total">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Condiciones de pago -->
+      <div class="lv-modal-section">
+        <div class="lv-modal-section-title">Condiciones de pago</div>
+        <div class="lv-modal-grid">
+          <div>
+            <div class="lv-modal-field-label">Retención de ventas:</div>
+            <div class="lv-modal-field-value" id="m-retencion">—</div>
+          </div>
+          <div>
+            <div class="lv-modal-field-label">Día de pago:</div>
+            <div class="lv-modal-field-value">Fin de mes</div>
+          </div>
+        </div>
+        <div class="lv-modal-divider"></div>
+        <div>
+          <div class="lv-modal-field-label">Pago mínimo mensual:</div>
+          <div class="lv-modal-field-value" id="m-cuota">—</div>
+        </div>
+      </div>
+
+    </div><!-- /lv-modal-body -->
+
+    <div class="lv-modal-footer">
+      <button class="lv-btn-cancelar" onclick="closeDetail()">Cancelar</button>
+      <a id="m-cta" href="https://app.levannta.com/auth/register?utm_source=simulador&producto=credito-comercio" target="_blank" rel="noopener" class="lv-btn-confirmar">
+        Confirmar solicitud
+      </a>
+    </div>
+
+  </div><!-- /lv-modal -->
+</div><!-- /lv-overlay -->
+
+<script>
+  let selectedMax = 0;
+
+  function fmtCLP(n) {
+    return '$' + Math.round(n).toLocaleString('es-CL');
+  }
+
+  function selectRange(el) {
+    document.querySelectorAll('.lv-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('btnContinuar').classList.add('visible');
+  }
+
+  function renderOffers() {
+    /* Oferta A: monto máximo, 13% comisión, 0.8% fee, 12 cuotas */
+    const capitalA = selectedMax;
+    const montoA   = capitalA * (1 - 0.13);
+    const feeA     = montoA * 0.008;
+    const cuotaA   = montoA / 12;
+
+    document.getElementById('ofertaA-monto').textContent = fmtCLP(montoA);
+    document.getElementById('ofertaA-fee').textContent   = fmtCLP(feeA);
+    document.getElementById('ofertaA-cuota').textContent = fmtCLP(cuotaA);
+    document.getElementById('ofertaA-total').textContent = fmtCLP(montoA);
+
+    /* Oferta B: 80% del máximo, 10% comisión, 0.8% fee, 18 cuotas */
+    const capitalB = selectedMax * 0.80;
+    const montoB   = capitalB * (1 - 0.10);
+    const feeB     = montoB * 0.008;
+    const cuotaB   = montoB / 18;
+
+    document.getElementById('ofertaB-monto').textContent = fmtCLP(montoB);
+    document.getElementById('ofertaB-fee').textContent   = fmtCLP(feeB);
+    document.getElementById('ofertaB-cuota').textContent = fmtCLP(cuotaB);
+    document.getElementById('ofertaB-total').textContent = fmtCLP(montoB);
+  }
+
+  function goToOffers() {
+    const selected = document.querySelector('.lv-option.selected');
+    if (!selected) return;
+    selectedMax = parseInt(selected.dataset.max);
+    renderOffers();
+    document.getElementById('screen-pre').style.display    = 'none';
+    document.getElementById('screen-offers').style.display = 'block';
+  }
+
+  function goBack() {
+    document.getElementById('screen-offers').style.display = 'none';
+    document.getElementById('screen-pre').style.display    = 'block';
+  }
+
+  /* ─── Modal ──────────────────────────────────────────────── */
+  function showDetail(oferta) {
+    const isA = oferta === 'A';
+
+    const capital   = isA ? selectedMax : selectedMax * 0.80;
+    const comision  = isA ? 0.13 : 0.10;
+    const cuotas    = isA ? 12 : 18;
+    const retencion = isA ? '5,00%' : '10,00%';
+    const monto     = capital * (1 - comision);
+    const fee       = monto * 0.008;
+    const cuota     = monto / cuotas;
+
+    document.getElementById('m-plazo').textContent      = cuotas + ' cuotas';
+    document.getElementById('m-comision').textContent   = (comision * 100).toFixed(2).replace('.', ',') + '%';
+    document.getElementById('m-solicitado').textContent = fmtCLP(capital);
+    document.getElementById('m-fee').textContent        = fmtCLP(fee);
+    document.getElementById('m-desembolsar').textContent = fmtCLP(monto);
+    document.getElementById('m-total').textContent      = fmtCLP(monto);
+    document.getElementById('m-retencion').textContent  = retencion;
+    document.getElementById('m-cuota').textContent      = fmtCLP(cuota);
+    document.getElementById('m-cta').href = 'https://levannta.com/?utm_source=simuladorcomercio';
+
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetail() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeDetailOnBackdrop(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeDetail();
+  }
+</script>
+</body>
+</html>
