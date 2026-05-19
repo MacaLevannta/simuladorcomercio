@@ -261,7 +261,7 @@
     /* Cuotas pill */
     .lv-card-fields { padding: 18px 20px 0; }
 
-    .lv-cuotas-pill {
+    .lv-meses-pill {
       display: inline-flex;
       align-items: center;
       background: var(--color-teal-light);
@@ -591,12 +591,12 @@
 
             <div class="lv-card-fields">
 
-              <div class="lv-cuotas-pill">18 cuotas</div>
+              <div class="lv-meses-pill">12 meses</div>
 
               <div class="lv-fields-2col">
                 <div>
                   <div class="lv-field-label">Comisión</div>
-                  <div class="lv-field-value">13,00%</div>
+                  <div class="lv-field-value">10%</div>
                 </div>
                 <div>
                   <div class="lv-field-label">Fee por Servicios</div>
@@ -606,7 +606,7 @@
 
               <div class="lv-field-full">
                 <div class="lv-field-label">Modalidad de pago</div>
-                <div class="lv-field-value">5,00% retención</div>
+                <div class="lv-field-value">10% retención</div>
               </div>
 
               <div class="lv-divider"></div>
@@ -642,12 +642,12 @@
 
             <div class="lv-card-fields">
 
-              <div class="lv-cuotas-pill">12 cuotas</div>
+              <div class="lv-meses-pill">18 meses</div>
 
               <div class="lv-fields-2col">
                 <div>
                   <div class="lv-field-label">Comisión</div>
-                  <div class="lv-field-value">10,00%</div>
+                  <div class="lv-field-value">13%</div>
                 </div>
                 <div>
                   <div class="lv-field-label">Fee por Servicios</div>
@@ -657,7 +657,7 @@
 
               <div class="lv-field-full">
                 <div class="lv-field-label">Modalidad de pago</div>
-                <div class="lv-field-value">10,00% retención</div>
+                <div class="lv-field-value">5% retención</div>
               </div>
 
               <div class="lv-divider"></div>
@@ -764,10 +764,6 @@
             <div class="lv-modal-field-label">Retención de ventas:</div>
             <div class="lv-modal-field-value" id="m-retencion">—</div>
           </div>
-          <div>
-            <div class="lv-modal-field-label">Día de pago:</div>
-            <div class="lv-modal-field-value">Fin de mes</div>
-          </div>
         </div>
         <div class="lv-modal-divider"></div>
         <div>
@@ -802,22 +798,22 @@
   }
 
   function renderOffers() {
-    /* Oferta A: monto máximo (sin descuento), 13% comisión, 0.8% fee, 18 cuotas */
-    const montoA  = selectedMax;
-    const feeA    = montoA * 0.008;
-    const totalA  = montoA + montoA * 0.13 + feeA;
-    const cuotaA  = totalA / 18;
+    /* Oferta A: 80% del máximo, 10% comisión, 0.8% fee, 12 meses */
+    const montoA  = selectedMax * 0.80;
+    const feeA    = selectedMax === 5000000 ? 202000 : montoA * 0.008;
+    const totalA  = montoA + montoA * 0.10 + feeA;
+    const cuotaA  = totalA / 12;
 
     document.getElementById('ofertaA-monto').textContent = fmtCLP(montoA);
     document.getElementById('ofertaA-fee').textContent   = fmtCLP(feeA);
     document.getElementById('ofertaA-cuota').textContent = fmtCLP(cuotaA);
     document.getElementById('ofertaA-total').textContent = fmtCLP(totalA);
 
-    /* Oferta B: 80% del máximo, 10% comisión, 0.8% fee, 12 cuotas */
-    const montoB  = selectedMax * 0.80;
-    const feeB    = montoB * 0.008;
-    const totalB  = montoB + montoB * 0.10 + feeB;
-    const cuotaB  = totalB / 12;
+    /* Oferta B: monto máximo (sin descuento), 13% comisión, 0.8% fee, 18 meses */
+    const montoB  = selectedMax;
+    const feeB    = selectedMax === 5000000 ? 210000 : montoB * 0.008;
+    const totalB  = montoB + montoB * 0.13 + feeB;
+    const cuotaB  = totalB / 18;
 
     document.getElementById('ofertaB-monto').textContent = fmtCLP(montoB);
     document.getElementById('ofertaB-fee').textContent   = fmtCLP(feeB);
@@ -843,15 +839,15 @@
   function showDetail(oferta) {
     const isA = oferta === 'A';
 
-    const comision  = isA ? 0.13 : 0.10;
-    const cuotas    = isA ? 18 : 12;
-    const retencion = isA ? '5,00%' : '10,00%';
-    const monto     = isA ? selectedMax : selectedMax * 0.80;
-    const fee       = monto * 0.008;
+    const comision  = isA ? 0.10 : 0.13;
+    const meses    = isA ? 12 : 18;
+    const retencion = isA ? '10%' : '5%';
+    const monto     = isA ? selectedMax * 0.80 : selectedMax;
+    const fee       = selectedMax === 5000000 ? (isA ? 202000 : 210000) : monto * 0.008;
     const total     = monto + monto * comision + fee;
-    const cuota     = total / cuotas;
+    const cuota     = total / meses;
 
-    document.getElementById('m-plazo').textContent       = cuotas + ' cuotas';
+    document.getElementById('m-plazo').textContent       = meses + ' meses';
     document.getElementById('m-comision').textContent    = (comision * 100).toFixed(2).replace('.', ',') + '%';
     document.getElementById('m-solicitado').textContent  = fmtCLP(monto);
     document.getElementById('m-fee').textContent         = fmtCLP(fee);
