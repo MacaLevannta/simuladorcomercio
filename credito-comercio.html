@@ -848,7 +848,7 @@
     const cuota     = total / meses;
 
     document.getElementById('m-plazo').textContent       = meses + ' meses';
-    document.getElementById('m-comision').textContent    = (comision * 100).toFixed(2).replace('.', ',') + '%';
+    document.getElementById('m-comision').textContent    = (comision * 100) + '%';
     document.getElementById('m-solicitado').textContent  = fmtCLP(monto);
     document.getElementById('m-fee').textContent         = fmtCLP(fee);
     document.getElementById('m-desembolsar').textContent = fmtCLP(monto);
